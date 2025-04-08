@@ -2,20 +2,27 @@ package com.daangit.la8kierulf;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.awt.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 import java.io.*;
 import java.sql.*;
+import java.util.Objects;
 
 public class HelloController {
     public TextField tfUsername;
     public TextField tfpassword;
     public Label errorText;
     public Button btnLogin;
+    public VBox vboxHome;
     @FXML
     private Label welcomeText;
 
@@ -36,19 +43,22 @@ public class HelloController {
         autoLogin();
     }
 
-    public void onLogin(ActionEvent actionEvent) {
+    public void onLogin(ActionEvent actionEvent) throws IOException {
         String username = tfUsername.getText().trim();
         String password = tfpassword.getText().trim();
 
         if (authenticate(username, password)) {
             saveLoginToFile(username, password);
             System.out.println("Login successful!");
+            setScene("asd.fxml", "Student Form");
             // Proceed to dashboard
         } else {
             errorText.setText("Invalid username or password.");
 //            errorText.setFill(Color.RED);
             errorText.setVisible(true);
         }
+
+
     }
 
     private void setupDatabase() {
@@ -130,5 +140,16 @@ public class HelloController {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    private void setScene(String view, String title) throws IOException {
+        Stage stage = (Stage) vboxHome.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(view));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 500);
+        stage.setTitle(title);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
     }
 }
